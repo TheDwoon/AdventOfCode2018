@@ -12,7 +12,7 @@ public class Day03 {
 	private static final Pattern LINE_PATTERN = Pattern.compile("^#(\\d+) @ (\\d+),(\\d+): (\\d+)x(\\d+)");
 
 	public static void main(String[] args) {
-		Scanner scanner = new Scanner(Day03.class.getResourceAsStream("/DayThree.txt"));
+		Scanner scanner = new Scanner(Day03.class.getResourceAsStream("/Day03.txt"));
 		List<Rectangle> rects = new ArrayList<>();
 		
 		while (scanner.hasNextLine())
