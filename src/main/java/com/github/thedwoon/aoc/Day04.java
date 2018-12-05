@@ -200,17 +200,12 @@ public final class Day04 extends AbstractDay {
 	
 	private class GuardShiftProfile {
 		private final int guardId;
-		private final ShiftStartEvent shiftStartEvent;
-		private final List<Event> events;
 		
-		private final int timeAwake;
 		private final int timeAsleep;
 		private final GuardState[] states = new GuardState[60];
 		
 		private GuardShiftProfile(ShiftStartEvent e1, List<Event> events) {
 			this.guardId = e1.guardId;
-			this.shiftStartEvent = e1;
-			this.events = events;
 			
 			Iterator<Event> it = events.iterator();
 			Event e = null;
@@ -228,7 +223,6 @@ public final class Day04 extends AbstractDay {
 				states[min] = currentState;
 			}
 			
-			timeAwake = (int) Arrays.stream(states).filter(GuardState.AWAKE::equals).count();
 			timeAsleep = (int) Arrays.stream(states).filter(GuardState.ASLEEP::equals).count();
 		}		
 		
@@ -249,6 +243,7 @@ public final class Day04 extends AbstractDay {
 	}
 	
 	private class GuardProfile extends ArrayList<GuardShiftProfile> {
+		private static final long serialVersionUID = 684151248351318L;
 		private final int guardId;
 		
 		private GuardProfile(int guardId) {
