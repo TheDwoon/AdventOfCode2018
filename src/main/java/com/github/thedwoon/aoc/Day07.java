@@ -1,6 +1,7 @@
 package com.github.thedwoon.aoc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +13,7 @@ import java.util.stream.Collectors;
 public class Day07 extends AbstractDay {
 	private static final Pattern PATTERN = Pattern.compile("Step ([A-Z]{1}) must be finished before step ([A-Z]{1}) can begin.");
 	
-	@Override
-	public void run() {
+	private Map<Character, Node> getInput() {
 		Map<Character, Node> nodes = new HashMap<>();
 		
 		for (String line : getLines()) {
@@ -21,8 +21,8 @@ public class Day07 extends AbstractDay {
 			if (!m.find())
 				throw new IllegalArgumentException(line);
 			
-			char nodeName = m.group(1).charAt(0);
-			char requiredNodeName = m.group(2).charAt(0);
+			char requiredNodeName = m.group(1).charAt(0);
+			char nodeName = m.group(2).charAt(0);
 			
 			Node node = getNodeFromMap(nodes, nodeName);
 			Node requiredNode = getNodeFromMap(nodes, requiredNodeName);
@@ -30,16 +30,21 @@ public class Day07 extends AbstractDay {
 			requiredNode.following.add(node);
 		}
 		
+		return nodes;
+	}
+	
+	@Override
+	public void run() {
+		Map<Character, Node> nodes = getInput();
 		nodes.values().forEach(System.out::println);
 		
 		StringBuilder sb = new StringBuilder();
-		List<Node> visitNodes = nodes.values().stream().filter(n -> n.requirements.size() == 0).collect(Collectors.toList());
+		List<Node> visitNodes = nodes.values().stream().collect(Collectors.toList());
 		Collections.sort(visitNodes);
 		while (!visitNodes.isEmpty() && visitNodes.get(0).requirements.size() == 0) {
 			Node n = visitNodes.remove(0);
 			
 			n.following.forEach(f -> f.requirements.remove(n));
-			n.following.stream().filter(f -> f.requirements.size() == 0).forEach(visitNodes::add);
 
 			sb.append(n.name);
 			
@@ -47,8 +52,59 @@ public class Day07 extends AbstractDay {
 		}
 		
 		System.out.println("Stage 1: " + sb.toString());
+		
+		nodes = getInput();
+		Worker[] workers = new Worker[] {new Worker(), new Worker(), new Worker(), new Worker(), new Worker()};
+		
+		int totalTime = 0;
+		sb = new StringBuilder();
+		visitNodes = nodes.values().stream().collect(Collectors.toList());
+		Collections.sort(visitNodes);
+		while (!visitNodes.isEmpty()) {
+			while (!visitNodes.isEmpty() && visitNodes.get(0).requirements.size() == 0 && timeToNextWorker(workers) == 0) {
+				Node n = visitNodes.remove(0);
+				Worker w = nextWorker(workers);
+				w.setWorkload(n);
+				
+				Collections.sort(visitNodes);
+			}
+			
+			int dt = Arrays.stream(workers).filter(Worker::isBusy).mapToInt(Worker::getTimeRemaining).min().orElse(0);
+			totalTime += dt;
+			passTime(workers, dt, sb);
+		}
+		
+		totalTime += Arrays.stream(workers).mapToInt(Worker::getTimeRemaining).max().orElse(0);
+		System.out.println("Stage 2: " + totalTime);
+	}
+	
+	private int timeToNextWorker(Worker[] workers) {
+		return Arrays.stream(workers).mapToInt(Worker::getTimeRemaining).min().orElse(0);
 	}
 
+	private Worker nextWorker(Worker[] workers) {
+		Worker w = workers[0];
+		for (int i = 1; i < workers.length; i++) {
+			if (workers[i].getTimeRemaining() < w.getTimeRemaining()) 
+				w = workers[i];
+		}
+		
+		return w;
+	}
+	
+	private void passTime(Worker[] workers, int time, StringBuilder sb) {
+		for (int i = 0; i < workers.length; i++) {
+			workers[i].passTime(time);
+			if (workers[i].getTimeRemaining() == 0 && workers[i].currentNode != null) {
+				workers[i].finish(sb);
+			}
+		}
+	}
+	
+	private int getTimeForStep(char c) {
+		return 60 + (c - 'A') + 1;
+	}
+	
 	private Node getNodeFromMap(Map<Character, Node> nodes, char nodeName) {
 		Node node = nodes.get(nodeName);
 		if (node == null) {
@@ -94,6 +150,37 @@ public class Day07 extends AbstractDay {
 			sb.append("]");
 			
 			return sb.toString();
+		}
+	}
+	
+	private class Worker {
+		private Node currentNode;
+		private int time;
+		
+		private Worker() {
+			
+		}
+		
+		public void finish(StringBuilder sb) {
+			currentNode.following.forEach(f -> f.requirements.remove(currentNode));
+			currentNode = null;			
+		}
+		
+		public void setWorkload(Node node) {
+			this.currentNode = node;
+			this.time = getTimeForStep(node.name);
+		}
+		
+		public boolean isBusy() {
+			return time > 0;
+		}
+		
+		public void passTime(int dt) {				
+			this.time = Math.max(0, this.time - dt);			
+		}
+		
+		public int getTimeRemaining() {
+			return time;
 		}
 	}
 }
