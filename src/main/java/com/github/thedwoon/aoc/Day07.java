@@ -65,13 +65,12 @@ public class Day07 extends AbstractDay {
 				Node n = visitNodes.remove(0);
 				Worker w = nextWorker(workers);
 				w.setWorkload(n);
-				
-				Collections.sort(visitNodes);
 			}
 			
 			int dt = Arrays.stream(workers).filter(Worker::isBusy).mapToInt(Worker::getTimeRemaining).min().orElse(0);
 			totalTime += dt;
 			passTime(workers, dt, sb);
+			Collections.sort(visitNodes);
 		}
 		
 		totalTime += Arrays.stream(workers).mapToInt(Worker::getTimeRemaining).max().orElse(0);
