@@ -5,19 +5,38 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-public class Day08 extends AbstractDay {
+import com.github.thedwoon.aoc.day08.Node;
+
+public final class Day08 extends AbstractDay<Node> {
+	
+	public Day08() {
+		super();
+	}
 	
 	public static void main(String[] args) {
 		new Day08().run();
 	}
 
 	@Override
-	public void run() {
-		List<Integer> input = getInput();
+	protected Node getInput() {		
+		List<Integer> input = new ArrayList<>();
+		try (Scanner scanner = new Scanner(getResourceAsStream())) {
+			while (scanner.hasNextInt()) {
+				input.add(scanner.nextInt());
+			}
+		}
 		
-		Node root = parseNode(input.iterator());
-		System.out.println("Stage 1: " + sumMetadata(root));
-		System.out.println("Stage 2: " + sumMetadataSpecial(root));
+		return parseNode(input.iterator());
+	}
+
+	@Override
+	protected String runPart1(Node root) {
+		return Integer.toString(sumMetadata(root));
+	}
+	
+	@Override
+	protected String runPart2(Node root) {
+		return Integer.toString(sumMetadataSpecial(root));
 	}
 	
 	private int sumMetadata(Node node) {
@@ -58,25 +77,5 @@ public class Day08 extends AbstractDay {
 			node.metadata.add(it.next());
 		
 		return node;
-	}
-	
-	private List<Integer> getInput() {		
-		List<Integer> input = new ArrayList<>();
-		try (Scanner scanner = new Scanner(getResourceAsStream())) {
-			while (scanner.hasNextInt()) {
-				input.add(scanner.nextInt());
-			}
-		}
-		
-		return input;
-	}
-
-	private class Node {
-		private List<Node> nodes = new ArrayList<>();
-		private List<Integer> metadata = new ArrayList<>();
-		
-		private Node() {
-			
-		}
 	}
 }

@@ -1,23 +1,23 @@
 package com.github.thedwoon.aoc;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class Day02 {
-	public static void main(String[] args) {
-		List<String> lines = new ArrayList<>();
-		try (Scanner scanner = new Scanner(Day02.class.getResourceAsStream("/Day02.txt"))) {
-			while (scanner.hasNextLine()) {
-				lines.add(scanner.nextLine());
-			}
-		}
-		
-		stage1(lines);
-		stage2(lines);
+public final class Day02 extends AbstractDay<List<String>> {
+	
+	public Day02() {
+		super();
 	}
 	
-	private static void stage1(List<String> lines) {
+	public static void main(String[] args) {
+		new Day02().run();
+	}
+	
+	@Override
+	protected List<String> getInput() {
+		return getLines();
+	}
+
+	protected String runPart1(List<String> lines) {
 		int twos = 0;
 		int threes = 0;
 		
@@ -31,9 +31,24 @@ public class Day02 {
 				threes += 1;
 		}
 		
-		System.out.println("Stage 1: " + twos * threes);
+		return Integer.toString(twos * threes);
 	}
 	
+	protected String runPart2(List<String> lines) {
+		for (String in1 : lines) {
+			char[] a = in1.toCharArray();
+			for (String in2 : lines) {
+				char[] b = in2.toCharArray();
+				int d = computeDistance(a, b);
+				if (d == 1) {					
+					return filterEquals(a, b);
+				}
+			}
+		}
+		
+		return "No solution :(";
+	}
+
 	private static int[] createHistogramm(char[] chars) {
 		int[] h = new int[26];
 		for (char c : chars) {
@@ -61,20 +76,6 @@ public class Day02 {
 		}
 		
 		return false;
-	}
-	
-	private static void stage2(List<String> lines) {
-		for (String in1 : lines) {
-			char[] a = in1.toCharArray();
-			for (String in2 : lines) {
-				char[] b = in2.toCharArray();
-				int d = computeDistance(a, b);
-				if (d == 1) {					
-					System.out.println("Stage 2: " + filterEquals(a, b));
-					return;
-				}
-			}
-		}
 	}
 	
 	private static int computeDistance(char[] a, char[] b) {

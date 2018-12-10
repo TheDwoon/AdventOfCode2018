@@ -2,14 +2,28 @@ package com.github.thedwoon.aoc;
 
 import java.util.Arrays;
 
-public class Day05 extends AbstractDay {
+public final class Day05 extends AbstractDay<String> {
+	
+	public Day05() {
+		super();
+	}
+	
+	public static void main(String[] args) {
+		new Day05().run();
+	}
 
 	@Override
-	public void run() {
-		String input = getLines().get(0);			
-				
-		System.out.println("Stage 1: " + react(input).length());
-		
+	protected String getInput() {
+		return getLines().get(0);
+	}
+	
+	@Override
+	protected String runPart1(String input) {
+		return Integer.toString(react(input).length());
+	}
+	
+	@Override
+	protected String runPart2(String input) {
 		char[] alphabet = "abcdefghijklmopqrstuvwxyz".toCharArray();
 		int[] resultingLength = new int[alphabet.length];
 		
@@ -20,7 +34,7 @@ public class Day05 extends AbstractDay {
 			resultingLength[i] = react(modified).length();
 		}
 		
-		System.out.println("Stage 2: " + Arrays.stream(resultingLength).min().orElse(0));
+		return Integer.toString(Arrays.stream(resultingLength).min().orElse(0));
 	}
 	
 	private String react(String input) {
@@ -44,9 +58,4 @@ public class Day05 extends AbstractDay {
 		
 		return input;
 	}
-
-	public static void main(String[] args) {
-		new Day05().run();
-	}
-
 }

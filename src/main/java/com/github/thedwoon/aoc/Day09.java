@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Day09 extends AbstractDay {
+public final class Day09 extends AbstractDay<int[]> {
 	private static final Pattern PATTERN = Pattern.compile("(\\d+) players; last marble is worth (\\d+) points");
 	
-	private int[] getInput() {
+	@Override
+	protected int[] getInput() {
 		Matcher m = PATTERN.matcher(getLines().get(0));
 		if (!m.find())
 			throw new IllegalArgumentException(getLines().get(0));
@@ -17,14 +18,16 @@ public class Day09 extends AbstractDay {
 	}
 	
 	@Override
-	public void run() {
-		int[] input = getInput();	
-		
-		playGame(input[0], input[1]);
-		playGame(input[0], input[1] * 100);
+	protected String runPart1(int[] input) {
+		return playGame(input[0], input[1]);
 	}
 	
-	private void playGame(int players, int rounds) {
+	@Override
+	protected String runPart2(int[] input) {
+		return playGame(input[0], input[1] * 100);
+	}
+	
+	private String playGame(int players, int rounds) {
 		long[] playerScores = new long[players];
 		Game g = new Game();
 		
@@ -48,6 +51,7 @@ public class Day09 extends AbstractDay {
 		}
 		
 		System.out.printf("***** WINNER *****\nPlayer %d: %d\n", bestPlayer + 1, maxScore);
+		return Long.toString(maxScore);
 	}
 	
 	public static void main(String[] args) {		

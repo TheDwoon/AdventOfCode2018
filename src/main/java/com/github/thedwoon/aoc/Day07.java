@@ -1,6 +1,5 @@
 package com.github.thedwoon.aoc;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,10 +9,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Day07 extends AbstractDay {
+import com.github.thedwoon.aoc.day07.Node;
+import com.github.thedwoon.aoc.day07.Worker;
+
+public final class Day07 extends AbstractDay<Map<Character, Node>> {
 	private static final Pattern PATTERN = Pattern.compile("Step ([A-Z]{1}) must be finished before step ([A-Z]{1}) can begin.");
 	
-	private Map<Character, Node> getInput() {
+	public Day07() {
+		super();
+	}
+	
+	public static void main(String[] args) {
+		new Day07().run();
+	}
+
+	@Override
+	protected Map<Character, Node> getInput() {
 		Map<Character, Node> nodes = new HashMap<>();
 		
 		for (String line : getLines()) {
@@ -34,12 +45,11 @@ public class Day07 extends AbstractDay {
 	}
 	
 	@Override
-	public void run() {
-		Map<Character, Node> nodes = getInput();
-		nodes.values().forEach(System.out::println);
+	protected String runPart1(Map<Character, Node> input) {
+		input.values().forEach(System.out::println);
 		
 		StringBuilder sb = new StringBuilder();
-		List<Node> visitNodes = nodes.values().stream().collect(Collectors.toList());
+		List<Node> visitNodes = input.values().stream().collect(Collectors.toList());
 		Collections.sort(visitNodes);
 		while (!visitNodes.isEmpty() && visitNodes.get(0).requirements.size() == 0) {
 			Node n = visitNodes.remove(0);
@@ -51,14 +61,16 @@ public class Day07 extends AbstractDay {
 			Collections.sort(visitNodes);
 		}
 		
-		System.out.println("Stage 1: " + sb.toString());
-		
-		nodes = getInput();
+		return sb.toString();
+	}
+	
+	@Override
+	protected String runPart2(Map<Character, Node> input) {
 		Worker[] workers = new Worker[] {new Worker(), new Worker(), new Worker(), new Worker(), new Worker()};
 		
 		int totalTime = 0;
-		sb = new StringBuilder();
-		visitNodes = nodes.values().stream().collect(Collectors.toList());
+		StringBuilder sb = new StringBuilder();
+		List<Node> visitNodes = input.values().stream().collect(Collectors.toList());
 		Collections.sort(visitNodes);
 		while (!visitNodes.isEmpty()) {
 			while (!visitNodes.isEmpty() && visitNodes.get(0).requirements.size() == 0 && timeToNextWorker(workers) == 0) {
@@ -74,7 +86,7 @@ public class Day07 extends AbstractDay {
 		}
 		
 		totalTime += Arrays.stream(workers).mapToInt(Worker::getTimeRemaining).max().orElse(0);
-		System.out.println("Stage 2: " + totalTime);
+		return Integer.toString(totalTime);
 	}
 	
 	private int timeToNextWorker(Worker[] workers) {
@@ -100,11 +112,11 @@ public class Day07 extends AbstractDay {
 		}
 	}
 	
-	private int getTimeForStep(char c) {
+	public static int getTimeForStep(char c) {
 		return 60 + (c - 'A') + 1;
 	}
 	
-	private Node getNodeFromMap(Map<Character, Node> nodes, char nodeName) {
+	public static Node getNodeFromMap(Map<Character, Node> nodes, char nodeName) {
 		Node node = nodes.get(nodeName);
 		if (node == null) {
 			node = new Node(nodeName);
@@ -112,74 +124,5 @@ public class Day07 extends AbstractDay {
 		}
 		
 		return node;
-	}
-	
-	public static void main(String[] args) {
-		new Day07().run();
-	}
-	
-	private class Node implements Comparable<Node> {
-		private List<Node> requirements = new ArrayList<>();
-		private List<Node> following = new ArrayList<>();
-		private char name;
-		
-		private Node(char name) {
-			this.name = name;
-		}
-		
-		@Override
-		public int compareTo(Node o) {
-			int c = Integer.compare(requirements.size(), o.requirements.size());
-			if (c != 0)
-				return c;
-			
-			return Character.compare(name, o.name);
-		}
-		
-		@Override
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			
-			sb.append("[ ");
-			requirements.forEach(n -> { sb.append(n.name); sb.append(" "); });
-			sb.append("] --> ");
-			sb.append(name);
-			sb.append(" --> [ ");
-			following.forEach(n -> { sb.append(n.name); sb.append(" "); });
-			sb.append("]");
-			
-			return sb.toString();
-		}
-	}
-	
-	private class Worker {
-		private Node currentNode;
-		private int time;
-		
-		private Worker() {
-			
-		}
-		
-		public void finish(StringBuilder sb) {
-			currentNode.following.forEach(f -> f.requirements.remove(currentNode));
-			currentNode = null;			
-		}
-		
-		public void setWorkload(Node node) {
-			this.currentNode = node;
-			this.time = getTimeForStep(node.name);
-		}
-		
-		public boolean isBusy() {
-			return time > 0;
-		}
-		
-		public void passTime(int dt) {				
-			this.time = Math.max(0, this.time - dt);			
-		}
-		
-		public int getTimeRemaining() {
-			return time;
-		}
 	}
 }
