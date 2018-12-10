@@ -31,8 +31,6 @@ public class Day10 extends AbstractDay {
 	@Override
 	public void run() {
 		List<Star> stars = getInput();
-		
-		int bestSecond = 0;
 		long smallestCoveredArea = coveredArea(stars);
 		
 		int currentSecond = 0;
