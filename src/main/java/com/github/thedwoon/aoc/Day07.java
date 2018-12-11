@@ -46,8 +46,6 @@ public final class Day07 extends AbstractDay<Map<Character, Node>> {
 	
 	@Override
 	protected String runPart1(Map<Character, Node> input) {
-		input.values().forEach(System.out::println);
-		
 		StringBuilder sb = new StringBuilder();
 		List<Node> visitNodes = input.values().stream().collect(Collectors.toList());
 		Collections.sort(visitNodes);

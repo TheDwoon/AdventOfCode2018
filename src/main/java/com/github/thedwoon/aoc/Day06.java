@@ -66,22 +66,22 @@ public final class Day06 extends AbstractDay<List<Point>> {
 			}
 		}
 		
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				Point p = board[i][j];				
-				if (p != null)
-					if (!input.contains(p)) 
-						System.out.print(" - ");
-					else if (p.x == i + minX && p.y == j + minY) 
-						System.out.print(" X ");
-					else
-						System.out.printf("%2d ", p.pointId);
-				else
-					System.out.print(" . ");
-			}
-			
-			System.out.println();
-		}
+//		for (int i = 0; i < width; i++) {
+//			for (int j = 0; j < height; j++) {
+//				Point p = board[i][j];				
+//				if (p != null)
+//					if (!input.contains(p)) 
+//						System.out.print(" - ");
+//					else if (p.x == i + minX && p.y == j + minY) 
+//						System.out.print(" X ");
+//					else
+//						System.out.printf("%2d ", p.pointId);
+//				else
+//					System.out.print(" . ");
+//			}
+//			
+//			System.out.println();
+//		}
 		
 		
 		Collections.sort(input, (o1, o2) -> -Integer.compare(o1.coveredArea, o2.coveredArea));

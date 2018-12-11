@@ -34,10 +34,7 @@ public final class Day04 extends AbstractDay<List<GuardProfile>> {
 	protected List<GuardProfile> getInput() {
 		List<Event> events = getLines().stream().map(this::convertToEvent).collect(Collectors.toList()); 
 		Collections.sort(events);
-		for (Event e : events) {
-			System.out.println(e.line);
-		}
-		
+
 		List<GuardShiftProfile> shiftProfiles = new ArrayList<>();
 		
 		ShiftStartEvent currentShift = null;
@@ -57,8 +54,6 @@ public final class Day04 extends AbstractDay<List<GuardProfile>> {
 		
 		Map<Integer, GuardProfile> guardProfiles = new HashMap<>();
 		for (GuardShiftProfile shiftProfile : shiftProfiles) {
-			System.out.println(shiftProfile);
-			
 			GuardProfile guardProfile = guardProfiles.get(shiftProfile.guardId);
 			if (guardProfile == null) {
 				guardProfile = new GuardProfile(shiftProfile.guardId);
@@ -81,8 +76,6 @@ public final class Day04 extends AbstractDay<List<GuardProfile>> {
 				mostTimeSlept = timeSlept;
 				bestGuardProfile = guardProfile;
 			}
-			
-			System.out.println(guardProfile);
 		}
 		
 		int bestMinute = -1;
