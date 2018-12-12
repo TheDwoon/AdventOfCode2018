@@ -18,6 +18,7 @@ public final class AdventOfCode {
 		DAYS.add(new Day09());
 		DAYS.add(new Day10());
 		DAYS.add(new Day11());
+		DAYS.add(new Day12());
 	}
 	
 	private AdventOfCode() {
