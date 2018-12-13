@@ -31,24 +31,17 @@ public final class Day09 extends AbstractDay<int[]> {
 		Game g = new Game();
 		
 		for (int marble = 1; marble <= rounds; marble++) {
-//			if (marble % (rounds / 10) == 0)
-//				System.out.printf("PROGRESS: %.2f\n", marble / (double) rounds);
 			int player = (marble - 1) % playerScores.length; 
 			playerScores[player] += g.placeMarble(marble);
 		}
 		
 		long maxScore = playerScores[0];
-//		int bestPlayer = 0;
 		for (int p = 0; p < playerScores.length; p++) {
 			if (playerScores[p] > maxScore) {
-//				bestPlayer = p;
 				maxScore = playerScores[p];
 			}
-			
-//			System.out.printf("Score for Player %d: %d\n", p + 1, playerScores[p]);
 		}
 		
-//		System.out.printf("***** WINNER *****\nPlayer %d: %d\n", bestPlayer + 1, maxScore);
 		return Long.toString(maxScore);
 	}
 	
