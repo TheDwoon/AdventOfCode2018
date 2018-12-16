@@ -3,7 +3,7 @@ package com.github.thedwoon.aoc;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Day12 extends AbstractDay<List<String>> {
+public final class Day12 extends AbstractDay<List<String>> {
 	private static final char PLANT = '#';
 	private static final char EMPTY = '.';
 	
@@ -20,10 +20,8 @@ public class Day12 extends AbstractDay<List<String>> {
 		char[] gen = getInitialState(input);
 		char[][] patterns = getPatterns(input);
 		
-//		printGeneration(gen);
 		for (int i = 0; i < 20; i++) {
 			gen = performGeneration(gen, patterns);
-//			printGeneration(gen);
 		}
 	
 		int sum = 0;
